@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none';
+                 script-src 'self';
+                 style-src 'self' 'unsafe-inline';
+                 img-src 'self' data:;
+                 font-src 'self';
+                 connect-src 'none';">
+  <title>Privacy-Safe BPMN Viewer</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f5f5f5;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: #2c3e50;
+      color: white;
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 500;
+    }
+    .controls {
+      background: white;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    .file-input-wrapper {
+      position: relative;
+    }
+    input[type="file"] {
+      display: none;
+    }
+    .btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: #3498db;
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #2980b9;
+    }
+    .btn-secondary {
+      background: #95a5a6;
+      color: white;
+    }
+    .btn-secondary:hover {
+      background: #7f8c8d;
+    }
+    #canvas {
+      flex: 1;
+      background: white;
+      margin: 1rem;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    .info {
+      padding: 0.5rem 1rem;
+      background: #ecf0f1;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      color: #7f8c8d;
+    }
+    .privacy-notice {
+      background: #d4edda;
+      color: #155724;
+      padding: 0.75rem 1rem;
+      border-left: 4px solid #28a745;
+      margin: 0 2rem 1rem 2rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+    .error {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 1rem;
+      margin: 1rem 2rem;
+      border-radius: 4px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🔒 Privacy-Safe BPMN Viewer</h1>
+  </header>
+
+  <div class="privacy-notice">
+    ✓ 100% client-side processing | ✓ No external requests | ✓ No data sent anywhere | ✓ Strict CSP enforced
+  </div>
+
+  <div class="controls">
+    <div class="file-input-wrapper">
+      <label for="fileInput" class="btn btn-primary">Load BPMN File</label>
+      <input type="file" id="fileInput" accept=".bpmn,.xml">
+    </div>
+    <button id="zoomIn" class="btn btn-secondary">Zoom In</button>
+    <button id="zoomOut" class="btn btn-secondary">Zoom Out</button>
+    <button id="resetZoom" class="btn btn-secondary">Reset View</button>
+    <div class="info" id="info">No file loaded</div>
+  </div>
+
+  <div class="error" id="error"></div>
+
+  <div id="canvas"></div>
+
+  <!-- Self-hosted bpmn-js library files should be placed in ./lib/ directory -->
+  <script src="lib/bpmn-viewer.production.min.js"></script>
+  <script>
+    const viewer = new BpmnJS({
+      container: '#canvas'
+    });
+
+    const fileInput = document.getElementById('fileInput');
+    const info = document.getElementById('info');
+    const errorDiv = document.getElementById('error');
+
+    function showError(message) {
+      errorDiv.textContent = message;
+      errorDiv.style.display = 'block';
+    }
+
+    function hideError() {
+      errorDiv.style.display = 'none';
+    }
+
+    fileInput.addEventListener('change', async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      hideError();
+      info.textContent = `Loading ${file.name}...`;
+
+      try {
+        const text = await file.text();
+        await viewer.importXML(text);
+
+        const canvas = viewer.get('canvas');
+        canvas.zoom('fit-viewport');
+
+        info.textContent = `Loaded: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+      } catch (err) {
+        showError(`Failed to load BPMN: ${err.message}`);
+        info.textContent = 'Load failed';
+        console.error('Import error:', err);
+      }
+    });
+
+    document.getElementById('zoomIn').addEventListener('click', () => {
+      viewer.get('zoomScroll').stepZoom(1);
+    });
+
+    document.getElementById('zoomOut').addEventListener('click', () => {
+      viewer.get('zoomScroll').stepZoom(-1);
+    });
+
+    document.getElementById('resetZoom').addEventListener('click', () => {
+      viewer.get('canvas').zoom('fit-viewport');
+    });
+  </script>
+</body>
+</html>
