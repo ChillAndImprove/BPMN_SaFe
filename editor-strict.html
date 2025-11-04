@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Ultra-strict CSP: no inline scripts, no unsafe-eval, no external connections -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none';
+                 script-src 'self';
+                 style-src 'self';
+                 img-src 'self' data: blob:;
+                 font-src 'self';
+                 connect-src 'none';
+                 frame-ancestors 'none';
+                 base-uri 'self';
+                 form-action 'none';">
+  <title>Ultra-Strict BPMN Editor</title>
+  <link rel="stylesheet" href="lib/diagram-js.css">
+  <link rel="stylesheet" href="lib/bpmn-js.css">
+  <link rel="stylesheet" href="lib/bpmn-font.css">
+  <link rel="stylesheet" href="styles/editor.css">
+</head>
+<body>
+  <header>
+    <h1>🔐 Ultra-Strict BPMN Editor</h1>
+  </header>
+
+  <div class="privacy-notice">
+    ✓ Zero inline scripts | ✓ No eval() | ✓ No external resources | ✓ Maximum CSP protection
+  </div>
+
+  <div class="controls">
+    <div class="file-input-wrapper">
+      <label for="fileInput" class="btn btn-primary">Open BPMN</label>
+      <input type="file" id="fileInput" accept=".bpmn,.xml">
+    </div>
+    <button id="newDiagram" class="btn btn-primary">New Diagram</button>
+    <button id="saveBPMN" class="btn btn-success">Save BPMN</button>
+    <button id="saveSVG" class="btn btn-secondary">Export SVG</button>
+    <button id="zoomIn" class="btn btn-secondary">Zoom In</button>
+    <button id="zoomOut" class="btn btn-secondary">Zoom Out</button>
+    <button id="resetZoom" class="btn btn-secondary">Fit</button>
+    <div class="info" id="info">Ready to create or load a diagram</div>
+  </div>
+
+  <div class="error" id="error"></div>
+  <div class="success-message" id="success"></div>
+
+  <div id="canvas"></div>
+
+  <!-- All scripts must be external files with this strict CSP -->
+  <script src="lib/bpmn-modeler.production.min.js"></script>
+  <script src="scripts/editor.js"></script>
+</body>
+</html>

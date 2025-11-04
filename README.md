@@ -1,6 +1,8 @@
-# 🔒 Privacy-Safe BPMN Viewer
+# 🔒 Privacy-Safe BPMN Editor & Viewer
 
-A 100% client-side BPMN viewer that runs entirely in your browser with zero external connections. Perfect for viewing sensitive business processes without any data leaving your machine.
+A 100% client-side BPMN editor and viewer that runs entirely in your browser with zero external connections. Perfect for creating and viewing sensitive business processes without any data leaving your machine.
+
+> **Built with Claude Code by Anthropic** - AI-assisted development for privacy-first applications
 
 ## ✨ Privacy Features
 
@@ -9,135 +11,130 @@ A 100% client-side BPMN viewer that runs entirely in your browser with zero exte
 - ✅ **Self-Hosted**: No CDNs, no tracking, no analytics
 - ✅ **No Data Collection**: Files never leave your device
 - ✅ **GitHub Pages Ready**: Can be hosted on GitHub Pages safely
+- ✅ **Full BPMN 2.0 Support**: Complete modeling capabilities
 
-## 📋 Two Versions Available
+## 📋 Available Tools
 
-### 1. Basic Viewer (`viewer-basic.html`)
-- Single-file setup with inline styles
-- Easier to get started
-- CSP allows inline styles for convenience
-- Good for quick local use
+### ✏️ BPMN Editors (Create & Edit Diagrams)
 
-### 2. Strict Viewer (`viewer-strict.html`)
+#### 1. Strict Editor (`editor-strict.html`) ⭐ RECOMMENDED
+- Full-featured BPMN modeler
 - Ultra-strict CSP (no inline scripts/styles)
-- External CSS and JS files
+- Complete palette and context pad
+- Save BPMN files locally
+- Export to SVG
+- Keyboard shortcuts (Ctrl+S, Ctrl+N, etc.)
 - Maximum security posture
-- Better for production/GitHub Pages
 
-## 🚀 Setup Instructions
+#### 2. Basic Editor (`editor-basic.html`)
+- Same editing features as strict version
+- Single-file setup with inline styles
+- Easier to deploy locally
+- Good for quick local development
 
-### Step 1: Download bpmn-js
+### 👁️ BPMN Viewers (View-Only Mode)
 
-You need to download the bpmn-js library and host it locally:
+#### 3. Strict Viewer (`viewer-strict.html`)
+- Read-only BPMN viewing
+- Ultra-strict CSP
+- SVG export
+- Zoom controls
+
+#### 4. Basic Viewer (`viewer-basic.html`)
+- Single-file viewer
+- Quick diagram viewing
+- Simple interface
+
+## 🚀 Quick Start
+
+The repository is **ready to use** - all dependencies are included!
+
+### Option 1: Open Locally
 
 ```bash
-# Create lib directory
-mkdir -p lib
+# Clone the repository
+git clone https://github.com/ChillAndImprove/BPMN_SaFe.git
+cd BPMN_SaFe
 
-# Download bpmn-js (choose one method):
-
-# Option A: Using npm
-npm install bpmn-js
-cp node_modules/bpmn-js/dist/bpmn-viewer.production.min.js lib/
-
-# Option B: Direct download
-curl -L https://unpkg.com/bpmn-js@17.12.0/dist/bpmn-viewer.production.min.js -o lib/bpmn-viewer.production.min.js
-```
-
-### Step 2: Verify File Structure
-
-Your directory should look like this:
-
-```
-bpmn/
-├── lib/
-│   └── bpmn-viewer.production.min.js
-├── styles/
-│   └── viewer.css
-├── scripts/
-│   └── viewer.js
-├── viewer-basic.html
-├── viewer-strict.html
-└── README.md
-```
-
-### Step 3: Open and Use
-
-**For Basic Viewer:**
-```bash
-# Just open in browser
-firefox viewer-basic.html
-# or
-chrome viewer-basic.html
-```
-
-**For Strict Viewer:**
-```bash
-# Must be served via HTTP (not file://)
+# Start a local server (required for strict versions)
 python3 -m http.server 8000
-# Then open: http://localhost:8000/viewer-strict.html
+
+# Open in browser:
+# http://localhost:8000/editor-strict.html
 ```
 
-## 🌐 Deploy to GitHub Pages
+### Option 2: Use GitHub Pages
 
-### Method 1: Using GitHub Web Interface
+Simply visit: **https://chillandimprove.github.io/BPMN_SaFe/**
 
-1. Push all files to your repo
-2. Go to Settings → Pages
-3. Select branch (usually `main`) and root folder
-4. Save and wait for deployment
-5. Access at: `https://yourusername.github.io/bpmn/viewer-strict.html`
-
-### Method 2: Using Git Command Line
-
-```bash
-# Initialize git if needed
-git init
-
-# Add all files
-git add .
-
-# Commit
-git commit -m "Add privacy-safe BPMN viewer"
-
-# Add remote (replace with your repo URL)
-git remote add origin https://github.com/yourusername/bpmn.git
-
-# Push
-git branch -M main
-git push -u origin main
-```
-
-Then enable GitHub Pages in repository settings.
+Choose your preferred tool from the landing page.
 
 ## 🎯 Usage
 
-1. Click "Load BPMN File"
-2. Select a `.bpmn` or `.xml` file from your computer
-3. Use zoom controls or keyboard shortcuts:
-   - `Ctrl/Cmd + +`: Zoom in
-   - `Ctrl/Cmd + -`: Zoom out
-   - `Ctrl/Cmd + 0`: Reset view
-4. (Strict viewer only) Export diagram as SVG
+### Creating a New Diagram
+
+1. Open `editor-strict.html` or `editor-basic.html`
+2. Use the palette on the left to drag elements
+3. Click elements for the context pad
+4. Click **"Save BPMN"** to download your work
+
+### Editing an Existing Diagram
+
+1. Click **"Open BPMN"** and select your `.bpmn` file
+2. Edit as needed
+3. Save when done
+
+### Keyboard Shortcuts
+
+- `Ctrl/Cmd + S` - Save BPMN file
+- `Ctrl/Cmd + N` - New diagram
+- `Ctrl/Cmd + +` - Zoom in
+- `Ctrl/Cmd + -` - Zoom out
+- `Ctrl/Cmd + 0` - Fit to viewport
+
+## 📦 File Structure
+
+```
+BPMN_SaFe/
+├── index.html                  # Landing page
+├── editor-strict.html          # Editor with strict CSP
+├── editor-basic.html           # Editor with inline styles
+├── viewer-strict.html          # Viewer with strict CSP
+├── viewer-basic.html           # Viewer with inline styles
+├── lib/
+│   ├── bpmn-modeler.production.min.js  # Editor library (536 KB)
+│   ├── bpmn-viewer.production.min.js   # Viewer library (180 KB)
+│   ├── bpmn-js.css            # BPMN styles
+│   ├── diagram-js.css         # Diagram styles
+│   ├── bpmn-font.css          # Icon fonts
+│   └── font/                  # Font files
+├── scripts/
+│   ├── editor.js              # Editor logic (external)
+│   └── viewer.js              # Viewer logic (external)
+├── styles/
+│   ├── editor.css             # Editor UI styles
+│   └── viewer.css             # Viewer UI styles
+└── README.md                  # This file
+```
 
 ## 🔐 Content Security Policy Explained
 
-### Basic Viewer CSP:
+### Basic Versions CSP:
 ```
 default-src 'none';           → Block everything by default
 script-src 'self';            → Only scripts from same origin
 style-src 'self' 'unsafe-inline'; → CSS from same origin + inline
-img-src 'self' data:;         → Images from same origin + data URIs
+img-src 'self' data: blob:;   → Images from same origin + data URIs
 font-src 'self';              → Fonts from same origin
 connect-src 'none';           → No network requests allowed
 ```
 
-### Strict Viewer CSP (Even More Locked Down):
+### Strict Versions CSP (Maximum Security):
 ```
 default-src 'none';
 script-src 'self';            → No inline scripts allowed
 style-src 'self';             → No inline styles allowed
-img-src 'self' data:;
+img-src 'self' data: blob:;
 font-src 'self';
 connect-src 'none';
 frame-ancestors 'none';       → Cannot be embedded in frames
@@ -149,38 +146,39 @@ form-action 'none';           → No form submissions
 
 Open browser DevTools (F12) and check:
 
-1. **Network Tab**: Should show ZERO external requests
+1. **Network Tab**: Should show ZERO external requests (only local files)
 2. **Console**: Look for CSP violation warnings (there should be none)
-3. **Application/Storage**: No cookies, no localStorage used
+3. **Application/Storage**: No cookies, no localStorage used for tracking
 
-## 📦 File Size Reference
+## 🌐 Deploy to GitHub Pages
 
-- `bpmn-viewer.production.min.js`: ~500 KB
-- All other files: < 10 KB total
+### Automatic (Already Done for This Repo!)
 
-Total size: ~510 KB (works offline once loaded)
+This repo is already configured and live at:
+**https://chillandimprove.github.io/BPMN_SaFe/**
 
-## 🛠️ Troubleshooting
+### For Your Own Deployment
 
-### "BpmnJS is not defined"
-- Make sure `lib/bpmn-viewer.production.min.js` exists
-- Check browser console for 404 errors
+1. Fork this repository
+2. Go to Settings → Pages
+3. Source: Deploy from branch `main` / root
+4. Save and wait for deployment
+5. Access at: `https://YOUR_USERNAME.github.io/BPMN_SaFe/`
 
-### CSP Violations in Strict Viewer
-- Must be served via HTTP server (not `file://`)
-- Use Python/Node/other local server
+## 🆚 Editor vs Viewer Comparison
 
-### File Won't Load
-- Verify file is valid BPMN XML format
-- Check browser console for specific errors
-- Try with a sample BPMN file from bpmn.io
+| Feature | Editor | Viewer |
+|---------|--------|--------|
+| Create diagrams | ✅ | ❌ |
+| Edit diagrams | ✅ | ❌ |
+| View diagrams | ✅ | ✅ |
+| Save BPMN | ✅ | ❌ |
+| Export SVG | ✅ | ✅ |
+| Palette/Tools | ✅ | ❌ |
+| Context pad | ✅ | ❌ |
+| File size | 536 KB | 180 KB |
 
-### Blank Page on GitHub Pages
-- Wait a few minutes for GitHub Pages to build
-- Check that all paths are relative (no `/` prefix)
-- Verify `lib/` directory was pushed to repo
-
-## 🆚 Comparison
+## 🆚 Basic vs Strict Comparison
 
 | Feature | Basic | Strict |
 |---------|-------|--------|
@@ -190,22 +188,71 @@ Total size: ~510 KB (works offline once loaded)
 | Needs HTTP server | Optional | Required |
 | CSP strictness | High | Maximum |
 | GitHub Pages | ✅ | ✅ |
+| Production ready | ✅ | ✅✅ |
+
+## 🛠️ Development Setup
+
+If you want to modify or customize:
+
+```bash
+# Clone the repo
+git clone https://github.com/ChillAndImprove/BPMN_SaFe.git
+cd BPMN_SaFe
+
+# All dependencies are already included!
+# Just start editing the HTML/CSS/JS files
+
+# Test locally
+python3 -m http.server 8000
+```
 
 ## 📝 Sample BPMN Files
 
 You can get sample BPMN files from:
-- [bpmn.io](https://demo.bpmn.io) - Use "File → Download"
-- Create your own with modeling tools like Camunda Modeler
-- Export from business process tools
+- [bpmn.io demo](https://demo.bpmn.io) - Use "File → Download"
+- Create your own with Camunda Modeler
+- Export from business process tools like Signavio, Lucidchart, etc.
 
 ## 🤝 Contributing
 
-This viewer is intentionally minimal. No external dependencies beyond bpmn-js.
+Contributions welcome! This project prioritizes:
+- Privacy and security
+- Zero external dependencies (at runtime)
+- Simplicity and transparency
 
 ## 📄 License
 
-The viewer code is provided as-is. The bpmn-js library has its own license (MIT).
+This project is provided as-is. The bpmn-js library is licensed under bpmn.io license.
+
+## 🔧 Troubleshooting
+
+### "BpmnJS is not defined"
+- Ensure `lib/` directory contains all required files
+- Check browser console for 404 errors
+- Verify you're using an HTTP server for strict versions
+
+### CSP Violations in Strict Versions
+- Must be served via HTTP/HTTPS (not `file://`)
+- Use Python, Node, or other local server
+
+### Blank Page on GitHub Pages
+- Wait 2-3 minutes for GitHub to build
+- Check that all paths are relative
+- Verify `lib/` directory was pushed
+
+### Editor Features Not Working
+- Make sure you're using the editor, not viewer version
+- Check browser console for JavaScript errors
+- Try refreshing the page
+
+## 🙏 Credits
+
+- **Built with**: Claude Code by Anthropic
+- **BPMN Library**: [bpmn-js](https://bpmn.io/toolkit/bpmn-js/) by Camunda
+- **Developed for**: Privacy-conscious professionals and organizations
 
 ---
 
 **Privacy First** 🔒 **Client-Side Only** 💻 **No Tracking Ever** 🚫
+
+*Made with Claude Code - AI-assisted development that respects your privacy*

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none';
+                 script-src 'self';
+                 style-src 'self' 'unsafe-inline';
+                 img-src 'self' data: blob:;
+                 font-src 'self';
+                 connect-src 'none';">
+  <title>Privacy-Safe BPMN Editor</title>
+  <link rel="stylesheet" href="lib/diagram-js.css">
+  <link rel="stylesheet" href="lib/bpmn-js.css">
+  <link rel="stylesheet" href="lib/bpmn-font.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f5f5f5;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: #2c3e50;
+      color: white;
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 500;
+    }
+    .controls {
+      background: white;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .file-input-wrapper {
+      position: relative;
+    }
+    input[type="file"] {
+      display: none;
+    }
+    .btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    .btn-primary {
+      background: #3498db;
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #2980b9;
+    }
+    .btn-secondary {
+      background: #95a5a6;
+      color: white;
+    }
+    .btn-secondary:hover {
+      background: #7f8c8d;
+    }
+    .btn-success {
+      background: #27ae60;
+      color: white;
+    }
+    .btn-success:hover {
+      background: #229954;
+    }
+    .btn:active {
+      transform: translateY(1px);
+    }
+    #canvas {
+      flex: 1;
+      background: white;
+      margin: 1rem;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    .info {
+      padding: 0.5rem 1rem;
+      background: #ecf0f1;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      color: #7f8c8d;
+      flex: 1;
+      min-width: 150px;
+    }
+    .privacy-notice {
+      background: #d4edda;
+      color: #155724;
+      padding: 0.75rem 1rem;
+      border-left: 4px solid #28a745;
+      margin: 0 2rem 1rem 2rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+    .error {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 1rem;
+      margin: 1rem 2rem;
+      border-radius: 4px;
+      display: none;
+      border-left: 4px solid #dc3545;
+    }
+    .success-message {
+      background: #d1ecf1;
+      color: #0c5460;
+      padding: 1rem;
+      margin: 1rem 2rem;
+      border-radius: 4px;
+      display: none;
+      border-left: 4px solid #17a2b8;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🔒 Privacy-Safe BPMN Editor</h1>
+  </header>
+
+  <div class="privacy-notice">
+    ✓ 100% client-side editing | ✓ No external requests | ✓ No data sent anywhere | ✓ Strict CSP enforced
+  </div>
+
+  <div class="controls">
+    <div class="file-input-wrapper">
+      <label for="fileInput" class="btn btn-primary">Open BPMN</label>
+      <input type="file" id="fileInput" accept=".bpmn,.xml">
+    </div>
+    <button id="newDiagram" class="btn btn-primary">New Diagram</button>
+    <button id="saveBPMN" class="btn btn-success">Save BPMN</button>
+    <button id="saveSVG" class="btn btn-secondary">Export SVG</button>
+    <button id="zoomIn" class="btn btn-secondary">Zoom In</button>
+    <button id="zoomOut" class="btn btn-secondary">Zoom Out</button>
+    <button id="resetZoom" class="btn btn-secondary">Fit</button>
+    <div class="info" id="info">Ready to create or load a diagram</div>
+  </div>
+
+  <div class="error" id="error"></div>
+  <div class="success-message" id="success"></div>
+
+  <div id="canvas"></div>
+
+  <script src="lib/bpmn-modeler.production.min.js"></script>
+  <script>
+    const modeler = new BpmnJS({
+      container: '#canvas',
+      keyboard: {
+        bindTo: document
+      }
+    });
+
+    const fileInput = document.getElementById('fileInput');
+    const info = document.getElementById('info');
+    const errorDiv = document.getElementById('error');
+    const successDiv = document.getElementById('success');
+
+    // Default empty BPMN diagram
+    const emptyBpmn = `<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                  targetNamespace="http://bpmn.io/schema/bpmn"
+                  id="Definitions_1">
+  <bpmn:process id="Process_1" isExecutable="false">
+    <bpmn:startEvent id="StartEvent_1"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="173" y="102" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>`;
+
+    function showError(message) {
+      errorDiv.textContent = '⚠️ ' + message;
+      errorDiv.style.display = 'block';
+      setTimeout(() => errorDiv.style.display = 'none', 5000);
+    }
+
+    function showSuccess(message) {
+      successDiv.textContent = '✓ ' + message;
+      successDiv.style.display = 'block';
+      setTimeout(() => successDiv.style.display = 'none', 3000);
+    }
+
+    function hideMessages() {
+      errorDiv.style.display = 'none';
+      successDiv.style.display = 'none';
+    }
+
+    async function openDiagram(xml, filename = 'diagram') {
+      try {
+        await modeler.importXML(xml);
+        const canvas = modeler.get('canvas');
+        canvas.zoom('fit-viewport');
+        info.textContent = '✓ Loaded: ' + filename;
+        info.style.background = '#d4edda';
+        info.style.color = '#155724';
+      } catch (err) {
+        showError('Failed to load BPMN: ' + err.message);
+        info.textContent = 'Load failed';
+        console.error('Import error:', err);
+      }
+    }
+
+    // Load empty diagram on start
+    openDiagram(emptyBpmn, 'new diagram');
+
+    // File loading
+    fileInput.addEventListener('change', async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      hideMessages();
+      info.textContent = 'Loading ' + file.name + '...';
+
+      try {
+        const text = await file.text();
+        await openDiagram(text, file.name);
+      } catch (err) {
+        showError('Failed to read file: ' + err.message);
+      }
+    });
+
+    // New diagram
+    document.getElementById('newDiagram').addEventListener('click', () => {
+      openDiagram(emptyBpmn, 'new diagram');
+    });
+
+    // Save BPMN
+    document.getElementById('saveBPMN').addEventListener('click', async () => {
+      try {
+        const result = await modeler.saveXML({ format: true });
+        const xml = result.xml;
+
+        const blob = new Blob([xml], { type: 'application/xml' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'diagram.bpmn';
+        a.click();
+        URL.revokeObjectURL(url);
+
+        showSuccess('BPMN file saved successfully');
+      } catch (err) {
+        showError('Save failed: ' + err.message);
+      }
+    });
+
+    // Export SVG
+    document.getElementById('saveSVG').addEventListener('click', async () => {
+      try {
+        const result = await modeler.saveSVG();
+        const svg = result.svg;
+
+        const blob = new Blob([svg], { type: 'image/svg+xml' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'diagram.svg';
+        a.click();
+        URL.revokeObjectURL(url);
+
+        showSuccess('SVG exported successfully');
+      } catch (err) {
+        showError('Export failed: ' + err.message);
+      }
+    });
+
+    // Zoom controls
+    document.getElementById('zoomIn').addEventListener('click', () => {
+      try {
+        modeler.get('zoomScroll').stepZoom(1);
+      } catch (err) {
+        showError('Zoom failed');
+      }
+    });
+
+    document.getElementById('zoomOut').addEventListener('click', () => {
+      try {
+        modeler.get('zoomScroll').stepZoom(-1);
+      } catch (err) {
+        showError('Zoom failed');
+      }
+    });
+
+    document.getElementById('resetZoom').addEventListener('click', () => {
+      try {
+        modeler.get('canvas').zoom('fit-viewport');
+      } catch (err) {
+        showError('Reset failed');
+      }
+    });
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        document.getElementById('saveBPMN').click();
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+        e.preventDefault();
+        document.getElementById('newDiagram').click();
+      }
+    });
+
+    console.log('🔒 Privacy-Safe BPMN Editor initialized');
+    console.log('✓ All editing happens locally in your browser');
+    console.log('✓ No data is sent to any server');
+    console.log('Shortcuts: Ctrl+S (Save), Ctrl+N (New)');
+  </script>
+</body>
+</html>

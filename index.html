@@ -115,8 +115,8 @@
 </head>
 <body>
   <div class="container">
-    <h1>🔒 Privacy-Safe BPMN Viewer</h1>
-    <p class="tagline">View BPMN diagrams with complete privacy - 100% client-side processing</p>
+    <h1>🔒 Privacy-Safe BPMN Editor & Viewer</h1>
+    <p class="tagline">Create and view BPMN diagrams with complete privacy - 100% client-side processing</p>
 
     <div class="privacy-badges">
       <span class="badge">✓ No External Requests</span>
@@ -126,14 +126,24 @@
     </div>
 
     <div class="options">
-      <a href="viewer-strict.html" class="option recommended">
-        <h2>🔐 Strict Viewer</h2>
-        <p>Ultra-strict Content Security Policy with external CSS/JS files. Maximum security for production use. Includes SVG export functionality.</p>
+      <a href="editor-strict.html" class="option recommended">
+        <h2>✏️ BPMN Editor (Strict)</h2>
+        <p>Full-featured BPMN editor with ultra-strict CSP. Create, edit, and save diagrams. Includes palette, context pad, and all modeling features.</p>
+      </a>
+
+      <a href="editor-basic.html" class="option">
+        <h2>✏️ BPMN Editor (Basic)</h2>
+        <p>Single-file BPMN editor. Same powerful editing features with inline styles for easier local deployment.</p>
+      </a>
+
+      <a href="viewer-strict.html" class="option">
+        <h2>👁️ BPMN Viewer (Strict)</h2>
+        <p>View-only mode with ultra-strict CSP. Perfect for reviewing diagrams without editing capabilities.</p>
       </a>
 
       <a href="viewer-basic.html" class="option">
-        <h2>⚡ Basic Viewer</h2>
-        <p>Single-file viewer with inline styles. Easier to use locally, still maintains strict CSP for scripts and network isolation.</p>
+        <h2>👁️ BPMN Viewer (Basic)</h2>
+        <p>Single-file viewer for quick diagram viewing. Read-only mode with simple interface.</p>
       </a>
     </div>
 
@@ -144,6 +154,9 @@
       </p>
       <p style="margin-top: 0.5rem; font-size: 0.85rem;">
         Your files never leave your browser. All processing happens locally.
+      </p>
+      <p style="margin-top: 0.5rem; font-size: 0.8rem; color: #bdc3c7;">
+        Built with Claude Code by Anthropic
       </p>
     </footer>
   </div>
