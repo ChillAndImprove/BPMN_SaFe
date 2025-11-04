@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none';
+                 script-src 'self';
+                 style-src 'unsafe-inline';
+                 navigate-to *;">
+  <title>Privacy-Safe BPMN Viewer</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-width: 800px;
+      width: 100%;
+      padding: 3rem;
+    }
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 1rem;
+      font-size: 2.5rem;
+    }
+    .tagline {
+      color: #7f8c8d;
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+    }
+    .privacy-badges {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+    .badge {
+      background: #d4edda;
+      color: #155724;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    .options {
+      display: grid;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .option {
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 1.5rem;
+      transition: all 0.3s;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    .option:hover {
+      border-color: #667eea;
+      box-shadow: 0 4px 12px rgba(102,126,234,0.2);
+      transform: translateY(-2px);
+    }
+    .option h2 {
+      color: #667eea;
+      margin-bottom: 0.5rem;
+      font-size: 1.5rem;
+    }
+    .option p {
+      color: #7f8c8d;
+      line-height: 1.6;
+    }
+    .recommended {
+      border-color: #667eea;
+      background: #f8f9ff;
+    }
+    .recommended::before {
+      content: "⭐ RECOMMENDED";
+      display: block;
+      color: #667eea;
+      font-size: 0.75rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+    footer {
+      text-align: center;
+      color: #95a5a6;
+      font-size: 0.9rem;
+      padding-top: 2rem;
+      border-top: 1px solid #e0e0e0;
+    }
+    .github-link {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .github-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔒 Privacy-Safe BPMN Viewer</h1>
+    <p class="tagline">View BPMN diagrams with complete privacy - 100% client-side processing</p>
+
+    <div class="privacy-badges">
+      <span class="badge">✓ No External Requests</span>
+      <span class="badge">✓ Zero Data Collection</span>
+      <span class="badge">✓ Strict CSP</span>
+      <span class="badge">✓ Open Source</span>
+    </div>
+
+    <div class="options">
+      <a href="viewer-strict.html" class="option recommended">
+        <h2>🔐 Strict Viewer</h2>
+        <p>Ultra-strict Content Security Policy with external CSS/JS files. Maximum security for production use. Includes SVG export functionality.</p>
+      </a>
+
+      <a href="viewer-basic.html" class="option">
+        <h2>⚡ Basic Viewer</h2>
+        <p>Single-file viewer with inline styles. Easier to use locally, still maintains strict CSP for scripts and network isolation.</p>
+      </a>
+    </div>
+
+    <footer>
+      <p>
+        View the source code on
+        <a href="https://github.com/ChillAndImprove/BPMN_SaFe" class="github-link" target="_blank" rel="noopener">GitHub</a>
+      </p>
+      <p style="margin-top: 0.5rem; font-size: 0.85rem;">
+        Your files never leave your browser. All processing happens locally.
+      </p>
+    </footer>
+  </div>
+</body>
+</html>
